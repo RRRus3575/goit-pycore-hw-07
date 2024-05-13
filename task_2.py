@@ -13,9 +13,10 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        if not value.isdigit() or len(value) != 10:
+        if value.isdigit() and len(value) == 10:
+            super().__init__(value)
+        else: 
             raise ValueError("Phone number must be a 10-digit number.")
-        super().__init__(value)
 
 class Birthday(Field):
     def __init__(self, value):
@@ -103,16 +104,18 @@ def parse_input(user_input):
 
 @input_error
 def add_contact(args, book: AddressBook):
-    name, phone, *_ = args
-    record = book.find(name)
-    if record is None:
-        record = Record(name)
-        book.add_record(record)
-        return "Contact added."
-    else:
-        record.add_phone(phone)
-        return "Contact updated."
-    
+    try:
+        name, phone, *_ = args
+        record = book.find(name)
+        if record is None:
+            record = Record(name)
+            book.add_record(record)
+            return "Contact added."
+        else:
+            record.add_phone(phone)
+            return "Contact updated."
+    except ValueError as e:
+        return str(e)
 
 @input_error
 def show_phone(args, book: AddressBook):        
@@ -143,6 +146,8 @@ def add_birthday(args, book: AddressBook):
         else:
             record.add_birthday(date)
             return 'Birthday has been added to the contact'
+    except ValueError as e:
+        return str(e)
     except:
         return 'Enter name and birthday date'
 
@@ -183,7 +188,7 @@ def main():
             break
 
         elif command == "hello":
-            print("How can I help you?")
+            print("Hello! How can I help you?")
 
         elif command == "add":
             print(add_contact(args, book))
