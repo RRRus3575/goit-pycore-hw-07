@@ -14,9 +14,12 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         if value.isdigit() and len(value) == 10:
+            print('add number')
             super().__init__(value)
         else: 
+            print('error number')
             raise ValueError("Phone number must be a 10-digit number.")
+            
 
 class Birthday(Field):
     def __init__(self, value):
@@ -110,10 +113,8 @@ def add_contact(args, book: AddressBook):
         if record is None:
             record = Record(name)
             book.add_record(record)
-            return "Contact added."
-        else:
-            record.add_phone(phone)
-            return "Contact updated."
+        record.add_phone(phone)
+        return "Contact updated."
     except ValueError as e:
         return str(e)
 
